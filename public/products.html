@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Products - Online Agriculture Product MarketPlace</title>
+  <meta name="description" content="Browse our complete agricultural catalog of fresh vegetables, grains, fruits, dairy, and spices directly from verified local farmers.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="products">
+
+  <!-- Top Notification Bar -->
+  <div class="top-notice-bar">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <span class="notice-badge">🌱 Direct from Farm</span>
+        <span>Empowering farmers with zero middleman commissions. 100% transparent pricing!</span>
+      </div>
+      <div id="engine-status-tag" class="engine-status-tag" title="Storage Engine Status">
+        <span class="status-dot"></span> Detecting Engine...
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <!-- Brand Logo -->
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🌾</div>
+        <div class="brand-text">
+          <span class="brand-title">AgriMarket</span>
+          <span class="brand-subtitle">Online Agriculture MarketPlace</span>
+        </div>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">🏠 Home</a>
+        <a href="products.html" class="nav-link active">🥦 Products</a>
+        <a href="categories.html" class="nav-link">🏷️ Categories</a>
+        <a href="cart.html" class="nav-link">🧺 Cart</a>
+        <a href="about.html" class="nav-link">ℹ️ About Us</a>
+        <button id="nav-db-inspector" class="nav-link">🗄️ DB Tables (SQL)</button>
+      </nav>
+
+      <!-- Right User Actions -->
+      <div class="nav-actions">
+        <!-- Active User Profile / Switcher Button -->
+        <div id="btn-switch-user" class="user-role-badge" title="Click to switch between Farmer and Customer demo profiles">
+          <div id="nav-user-avatar" class="user-avatar-small">K</div>
+          <div class="user-name-role">
+            <span id="nav-user-name" class="name">Kisan Patel</span>
+            <span id="nav-user-role" class="role-tag">FARMER</span>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">▼</span>
+        </div>
+
+        <!-- Cart Button -->
+        <a href="cart.html" id="btn-open-cart" class="btn-icon" title="View Shopping Basket">
+          🛒
+          <span id="cart-count-badge" class="cart-count-badge" style="display: none;">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Hero Banner -->
+  <section class="page-hero-banner">
+    <div class="hero-overlay"></div>
+    <div class="container page-hero-content">
+      <div class="page-breadcrumb">
+        <a href="index.html">Home</a> <span>/</span> <span>Agricultural Products</span>
+      </div>
+      <h1 class="page-title">Agricultural Product Catalog</h1>
+      <p class="page-subtitle">
+        Explore 100% farm-fresh produce harvested at peak ripeness. Direct farmer pricing with zero intermediary markups.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- Catalog Header & Farmer Quick Add -->
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <h2>Fresh Farm Produce Available Now</h2>
+        <p id="product-count-display">Showing all active agricultural harvests</p>
+      </div>
+      <div>
+        <button id="btn-open-add-product" class="btn-primary" style="font-size: 0.9rem;">
+          ➕ List New Agricultural Product
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="marketplace-controls">
+      <!-- Category Tab Pills -->
+      <div id="category-tabs" class="category-tabs"></div>
+
+      <!-- Search & Sorters -->
+      <div class="filter-row">
+        <div class="search-box">
+          <span class="search-icon-svg">🔍</span>
+          <input type="text" id="search-input" placeholder="Search vegetables, grains, fruits, farmers...">
+        </div>
+
+        <div class="filter-group-right">
+          <label class="stock-toggle-label">
+            <input type="checkbox" id="in-stock-only">
+            <span>In-Stock Only</span>
+          </label>
+
+          <select id="sort-select" class="sort-select">
+            <option value="default">Sort: Recommended</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="stock-desc">Stock: High to Low</option>
+            <option value="name-asc">Product Name (A-Z)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="products-grid" class="products-grid"></div>
+
+  </main>
+
+  <!-- ========================================================
+       MODALS
+       ======================================================== -->
+  <!-- Farmer Add Product Modal -->
+  <div id="modal-add-product" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>➕ List New Agricultural Product</h3>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <form id="form-add-product">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-prod-name">Product Name (product_name VARCHAR 150) *</label>
+            <input type="text" id="new-prod-name" required placeholder="e.g. Organic Red Capsicum / Sharbati Wheat">
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="new-prod-category">Category (category VARCHAR 50) *</label>
+              <select id="new-prod-category" required>
+                <option value="Vegetables">Vegetables</option>
+                <option value="Fruits">Fruits</option>
+                <option value="Grains & Cereals">Grains & Cereals</option>
+                <option value="Dairy & Honey">Dairy & Honey</option>
+                <option value="Tubers & Roots">Tubers & Roots</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="new-prod-price">Price per unit (price DECIMAL 10,2) *</label>
+              <input type="number" id="new-prod-price" required step="0.50" min="1" placeholder="e.g. 55.00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="new-prod-qty">Initial Stock Quantity (quantity INT) *</label>
+            <input type="number" id="new-prod-qty" required min="1" placeholder="e.g. 150">
+          </div>
+
+          <div class="form-group">
+            <label for="new-prod-desc">Product Description (description TEXT)</label>
+            <textarea id="new-prod-desc" rows="3" placeholder="Describe soil cultivation, harvesting technique, organic certifications, or culinary suitability..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="new-prod-img">Real Photo Image URL (image_url)</label>
+            <input type="url" id="new-prod-img" placeholder="https://images.unsplash.com/...">
+            
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Or pick a real farm photo preset:</div>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem;">
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=800&q=80">🍅 Tomatoes</button>
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=800&q=80">🌾 Wheat</button>
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80">🥭 Mangoes</button>
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=800&q=80">🥕 Carrots</button>
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80">🍯 Honey</button>
+              <button type="button" class="btn-mini-control sample-img-pill" data-url="https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=800&q=80">🥔 Potatoes</button>
+            </div>
+
+            <div class="image-preview-box">
+              <img id="add-product-img-preview" src="" alt="Product Image Preview" style="display: none;">
+              <span id="add-product-no-img" style="font-size: 0.8rem; color: var(--text-light);">Image preview will appear here</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-primary">List Product on Marketplace</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quick Stock Update Modal -->
+  <div id="modal-update-stock" class="modal-overlay">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3>📦 Update Product Stock</h3>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <form id="form-update-stock">
+        <div class="modal-body">
+          <input type="hidden" id="stock-modal-prod-id">
+          <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">
+            Updating stock for: <strong id="stock-modal-prod-name" style="color: var(--text-dark);"></strong>
+          </p>
+          <div style="background: #f1f5f9; padding: 0.75rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.85rem;">
+            Current Available Stock: <strong id="stock-modal-current" style="color: #14532d;"></strong>
+          </div>
+          <div class="form-group">
+            <label for="stock-modal-new-qty">New Available Stock Quantity (INT) *</label>
+            <input type="number" id="stock-modal-new-qty" required min="0" step="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-primary">Save Stock Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Quick Price Update Modal -->
+  <div id="modal-update-price" class="modal-overlay">
+    <div class="modal-container" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3>💰 Update Product Price</h3>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <form id="form-update-price">
+        <div class="modal-body">
+          <input type="hidden" id="price-modal-prod-id">
+          <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-muted);">
+            Updating price for: <strong id="price-modal-prod-name" style="color: var(--text-dark);"></strong>
+          </p>
+          <div style="background: #fef3c7; padding: 0.75rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-size: 0.85rem; color: #92400e;">
+            Current Farmer Price: <strong id="price-modal-current"></strong>
+          </div>
+          <div class="form-group">
+            <label for="price-modal-new-price">New Price (DECIMAL 10,2) *</label>
+            <input type="number" id="price-modal-new-price" required min="1" step="0.50">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn-primary">Save Price Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div id="modal-product-detail" class="modal-overlay">
+    <div class="modal-container" style="max-width: 620px;">
+      <div class="modal-header">
+        <span id="detail-category" class="category-tag">Produce</span>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <div class="modal-body" style="padding-top: 1rem;">
+        <div style="height: 260px; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.25rem;">
+          <img id="detail-img" src="" alt="Produce Photo" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h2 id="detail-name" style="font-size: 1.5rem; font-weight: 800; color: #14532d; margin-bottom: 0.5rem;"></h2>
+        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+          <div id="detail-price" style="font-size: 1.6rem; font-weight: 800; color: #14532d;"></div>
+          <span id="detail-stock" class="stock-tag in-stock"></span>
+        </div>
+        <p id="detail-desc" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;"></p>
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; font-weight: 700;">Cultivated By</div>
+            <div id="detail-farmer-name" style="font-weight: 800; color: var(--text-dark);"></div>
+            <div id="detail-farmer-contact" style="font-size: 0.8rem; color: var(--primary);"></div>
+          </div>
+          <span style="font-size: 2rem;">👨‍🌾</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary modal-close-trigger">Close</button>
+        <button id="btn-detail-add-cart" class="btn-primary">🛒 Add to Basket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Switcher Modal -->
+  <div id="modal-user" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>👥 Switch Demo Profile</h3>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Click any registered user to test the marketplace from either a <strong>Farmer</strong> perspective (to list crops and update stock/prices) or a <strong>Customer</strong> perspective (to browse and place orders).
+        </p>
+        <div id="user-switch-list" class="user-switch-grid"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary modal-close-trigger">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DB Inspector Modal -->
+  <div id="modal-db-inspector" class="modal-overlay">
+    <div class="modal-container large">
+      <div class="modal-header">
+        <div>
+          <h3>🗄️ Relational Database Inspector</h3>
+          <span id="db-modal-engine-badge" style="font-size: 0.75rem; color: #15803d; font-weight: 700;">Live SQL Schema Active</span>
+        </div>
+        <button class="cart-close-btn modal-close-trigger">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="db-tabs">
+          <button class="db-tab-btn active" data-table="users">Table: users</button>
+          <button class="db-tab-btn" data-table="products">Table: products</button>
+          <button class="db-tab-btn" data-table="orders">Table: orders</button>
+          <button class="db-tab-btn" data-table="order_items">Table: order_items</button>
+        </div>
+        <div id="db-schema-description" class="db-schema-badge"></div>
+        <div id="db-table-content" class="table-responsive"></div>
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button id="btn-db-reset-demo" class="btn-secondary" style="color: var(--danger); font-size: 0.85rem;">
+          🔄 Reset Default Demo Data
+        </button>
+        <button class="btn-primary modal-close-trigger">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>🌾 Online Agriculture Product MarketPlace</h4>
+          <p>
+            Bridging the gap between farmers and consumers. Providing sustainable fair-trade agricultural economics, live stock monitoring, and farm-to-door delivery.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Navigation</h5>
+          <ul>
+            <li><a href="index.html">🏠 Home Page</a></li>
+            <li><a href="products.html">🥦 All Products</a></li>
+            <li><a href="categories.html">🏷️ Categories</a></li>
+            <li><a href="cart.html">🧺 Shopping Cart</a></li>
+            <li><a href="about.html">ℹ️ About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Categories</h5>
+          <ul>
+            <li><a href="categories.html?cat=Vegetables">Fresh Vegetables</a></li>
+            <li><a href="categories.html?cat=Fruits">Organic Fruits</a></li>
+            <li><a href="categories.html?cat=Grains%20%26%20Cereals">Grains & Cereals</a></li>
+            <li><a href="categories.html?cat=Dairy%20%26%20Honey">Pure Honey & Dairy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Database Architecture</h5>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.75rem;">
+            Relational MySQL schema with tables: <code>users</code>, <code>products</code>, <code>orders</code>, <code>order_items</code>.
+          </p>
+          <button class="btn-secondary" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;" onclick="document.getElementById('nav-db-inspector').click();">
+            Inspect Database Tables
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Online Agriculture Product MarketPlace. Built with pure HTML, CSS, JavaScript, Express.js & MySQL.</div>
+        <div>Fair Agriculture • Transparent Food Network</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

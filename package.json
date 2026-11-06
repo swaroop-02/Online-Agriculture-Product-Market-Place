@@ -1,0 +1,26 @@
+{
+  "name": "online-agriculture-product-marketplace",
+  "version": "1.0.0",
+  "description": "A modern and elegant platform connecting farmers directly with customers to list, trade, and track agricultural products.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "agriculture",
+    "marketplace",
+    "farmers",
+    "ecommerce",
+    "express",
+    "mysql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  }
+}
